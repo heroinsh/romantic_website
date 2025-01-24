@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنجمین ماهگرد</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fontsource/shabnam/index.css" rel="stylesheet">
+    <style>
+        /* استایل‌های قبلی */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Shabnam', sans-serif;
+            color: white;
+            text-align: center;
+            direction: rtl;
+        }
+
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(10,10,40,1) 100%);
+            z-index: -2;
+        }
+
+        .moon {
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,224,1) 60%, rgba(255,255,224,0) 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 40px 15px rgba(255, 255, 224, 0.8);
+            animation: moonGlow 5s infinite alternate;
+        }
+
+        @keyframes moonGlow {
+            0% {
+                box-shadow: 0 0 40px 15px rgba(255, 255, 224, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 60px 25px rgba(255, 255, 224, 0.9);
+            }
+        }
+
+        .text {
+            position: relative;
+            margin: 20px auto;
+            max-width: 90%;
+            font-size: 1.8rem;
+            line-height: 2.5rem;
+            opacity: 0;
+            text-align: center;
+            transition: opacity 0.5s ease, text-shadow 0.5s ease;
+        }
+
+        .text.glow {
+            text-shadow: 0 0 12px rgba(255,255,255,0.8);
+        }
+
+        #text-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #flashlight {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            perspective: 1000px;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 8px white;
+            animation: twinkle 2s infinite, rotate 10s infinite linear;
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotateY(0deg) rotateX(0deg);
+            }
+            100% {
+                transform: rotateY(360deg) rotateX(360deg);
+            }
+        }
+
+        .meteor {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            box-shadow: 0 0 10px white;
+            animation: meteorShower 5s linear infinite;
+        }
+
+        @keyframes meteorShower {
+            0% {
+                transform: translateX(-100%) translateY(-100%);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100%) translateY(100%);
+                opacity: 0;
+            }
+        }
+
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        .music-controls button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Shabnam', sans-serif;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .music-controls button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        #interaction-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            z-index: 1000;
+            display: none;
+        }
+
+        /* استایل‌های جدید برای تایمر */
+        #countdown {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: white;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                transform: translateX(-50%) scale(1.05);
+            }
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
+        }
+
+        #countdown span {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+
+        /* استایل‌های جدید برای المان‌های مخفی */
+        .hidden-element {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            font-size: 1.5rem;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+            cursor: pointer;
+        }
+
+        .hidden-element.show {
+            opacity: 1;
+        }
+
+        .hidden-element .sticker {
+            font-size: 2rem;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .hidden-element .content {
+            display: none;
+            margin-top: 10px;
+            font-size: 1rem;
+            color: white;
+            text-shadow: none;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hidden-element.active .content {
+            display: block;
+        }
+
+        /* استایل‌های جدید برای برگه راهنما */
+        #guide-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.2rem;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        #guide-modal button {
+            background-color: #ffcc00;
+            border: none;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Shabnam', sans-serif;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        #guide-modal button:hover {
+            background-color: #ffdd33;
+        }
+
+        /* مدیا کوئری‌ها برای طراحی واکنش‌گرا */
+        @media (max-width: 768px) {
+            .moon {
+                width: 100px;
+                height: 100px;
+                top: 5%;
+                right: 5%;
+            }
+
+            .text {
+                font-size: 1.5rem;
+                line-height: 2rem;
+            }
+
+            .hidden-element .sticker {
+                font-size: 1.5rem;
+            }
+
+            .hidden-element .content {
+                font-size: 0.9rem;
+            }
+
+            #countdown {
+                font-size: 1.2rem;
+                padding: 10px 20px;
+            }
+
+            #countdown span {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .moon {
+                width: 80px;
+                height: 80px;
+                top: 3%;
+                right: 3%;
+            }
+
+            .text {
+                font-size: 1.2rem;
+                line-height: 1.8rem;
+            }
+
+            .hidden-element .sticker {
+                font-size: 1.2rem;
+            }
+
+            .hidden-element .content {
+                font-size: 0.8rem;
+            }
+
+            #countdown {
+                font-size: 1rem;
+                padding: 8px 16px;
+            }
+
+            #countdown span {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="background">
+        <div class="moon"></div>
+    </div>
+
+    <canvas id="flashlight"></canvas>
+
+    <div id="text-container">
+        <div class="text" id="text1">صبر کن، دارم برات یه دنیا عشق می‌سازم... 💕</div>
+        <div class="text" id="text2">مهسا جون، از اون روزی که اومدی تو زندگیم، هر روز قشنگ‌تر از دیروزه... 💖</div>
+        <div class="text" id="text3">تو یه دلیل قشنگی واسه لبخندام شدی، یه بهونه خوب واسه نفس کشیدن. 😘</div>
+        <div class="text" id="text4">با تو بودن، انگار دارم بهترین فصل یه فیلم عاشقانه رو زندگی می‌کنم. 🎥❤️</div>
+        <div class="text" id="final-text">فقط خواستم بگم... خیلی دوست دارم، بیشتر از هر چیزی که فکرشو کنی! 🌹</div>
+    </div>
+
+    <!-- المان‌های مخفی -->
+    <div class="hidden-element" style="top: 15%; left: 15%;">
+        <div class="sticker">🎁</div>
+        <div class="content">
+            <p>شعر حافظ:</p>
+            <p>بیا تا گل برافشانیم و می در ساغر اندازیم...</p>
+            <p>تبریک! کد مخفی: <strong>LOVE123</strong></p>
+        </div>
+    </div>
+    <div class="hidden-element" style="top: 25%; left: 75%;">
+        <div class="sticker">🎁</div>
+        <div class="content">
+            <p>شعر انگلیسی:</p>
+            <p>Love is not love which alters when it alteration finds...</p>
+            <p>معنی: عشق واقعی تغییر نمی‌کند، حتی وقتی شرایط تغییر کند.</p>
+            <p>تبریک! کد مخفی: <strong>STAR456</strong></p>
+        </div>
+    </div>
+    <div class="hidden-element" style="top: 50%; left: 20%;">
+        <div class="sticker">🎁</div>
+        <div class="content">
+            <p>شعر سعدی:</p>
+            <p>به جهان خرم از آنم که جهان خرم از اوست...</p>
+            <p>تبریک! کد مخفی: <strong>MOON789</strong></p>
+        </div>
+    </div>
+    <div class="hidden-element" style="top: 60%; left: 70%;">
+        <div class="sticker">🎁</div>
+        <div class="content">
+            <p>شعر مولانا:</p>
+            <p>دل میرود ز دستم، صاحبدلان خدا را...</p>
+            <p>تبریک! کد مخفی: <strong>SUN321</strong></p>
+        </div>
+    </div>
+    <div class="hidden-element" style="top: 80%; left: 10%;">
+        <div class="sticker">🎁</div>
+        <div class="content">
+            <p>شعر انگلیسی:</p>
+            <p>How do I love thee? Let me count the ways...</p>
+            <p>معنی: چقدر دوستت دارم؟ بگذار راه‌هایش را بشمارم.</p>
+            <p>تبریک! کد مخفی: <strong>HEART654</strong></p>
+        </div>
+    </div>
+    <div class="hidden-element" style="top: 90%; left: 60%;">
+        <div class="sticker">🎁</div>
+        <div class="content">
+            <p>شعر حافظ:</p>
+            <p>اگر آن ترک شیرازی به دست آرد دل ما را...</p>
+            <p>تبریک! کد مخفی: <strong>ROSE987</strong></p>
+        </div>
+    </div>
+
+    <div class="stars" id="stars"></div>
+
+    <div class="music-controls">
+        <button id="playButton">پخش موسیقی</button>
+        <button id="pauseButton">توقف موسیقی</button>
+    </div>
+
+    <div id="countdown">
+        زمان باقی‌مانده تا ماهگرد بعدی:
+        <br>
+        <span id="days"></span> روز
+        <span id="hours"></span> ساعت
+        <span id="minutes"></span> دقیقه
+        <span id="seconds"></span> ثانیه
+    </div>
+
+    <div id="interaction-message">
+        لطفاً برای پخش موسیقی روی صفحه کلیک کنید.
+    </div>
+
+    <!-- برگه راهنما -->
+    <div id="guide-modal">
+        <p>کدهای مخفی رو پیدا کن و به شایان بده! جایزه داری! 🎁</p>
+        <button id="close-guide">بستن</button>
+    </div>
+
+    <audio id="backgroundMusic" loop>
+        <source src="https://drive.google.com/uc?export=download&id=1RyBfggWWoLJ0zUhwTLhOWQuufvBQCynI" type="audio/mpeg">
+        مرورگر شما از عنصر صوتی پشتیبانی نمی‌کند.
+    </audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        // نمایش متن اول به مدت ۳ ثانیه و سپس محو شدن
+        const text1 = document.getElementById("text1");
+        gsap.to(text1, {
+            opacity: 1,
+            duration: 1,
+            delay: 0.5,
+            ease: "power2.out",
+            onComplete: () => {
+                gsap.to(text1, {
+                    opacity: 0,
+                    duration: 1,
+                    delay: 3,
+                    ease: "power2.out"
+                });
+            }
+        });
+
+        // تنظیمات چراغ قوه
+        const flashlight = document.getElementById("flashlight");
+        const ctx = flashlight.getContext("2d");
+        flashlight.width = window.innerWidth;
+        flashlight.height = window.innerHeight;
+
+        const light = { x: window.innerWidth / 2, y: window.innerHeight / 2, radius: 150 };
+
+        function drawLight() {
+            ctx.clearRect(0, 0, flashlight.width, flashlight.height);
+            ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
+            ctx.fillRect(0, 0, flashlight.width, flashlight.height);
+
+            const gradient = ctx.createRadialGradient(light.x, light.y, 0, light.x, light.y, light.radius);
+            gradient.addColorStop(0, "rgba(255, 255, 255, 0.8)");
+            gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(light.x, light.y, light.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalCompositeOperation = "source-over";
+        }
+
+        function handleLightMove(e) {
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            light.x = clientX;
+            light.y = clientY;
+            drawLight();
+
+            // بررسی برخورد نور با متن‌ها
+            const texts = document.querySelectorAll(".text");
+            texts.forEach(text => {
+                const rect = text.getBoundingClientRect();
+                const distance = Math.sqrt((light.x - (rect.left + rect.width / 2)) ** 2 + (light.y - (rect.top + rect.height / 2)) ** 2);
+                if (distance < light.radius) {
+                    text.style.opacity = 1;
+                    text.classList.add("glow");
+                } else {
+                    text.style.opacity = 0.3;
+                    text.classList.remove("glow");
+                }
+            });
+
+            // بررسی برخورد نور با المان‌های مخفی
+            const hiddenElements = document.querySelectorAll(".hidden-element");
+            hiddenElements.forEach(element => {
+                const rect = element.getBoundingClientRect();
+                const distance = Math.sqrt((light.x - (rect.left + rect.width / 2)) ** 2 + (light.y - (rect.top + rect.height / 2)) ** 2);
+                if (distance < light.radius) {
+                    element.classList.add("show");
+                } else {
+                    element.classList.remove("show");
+                }
+            });
+        }
+
+        document.addEventListener("mousemove", handleLightMove);
+        document.addEventListener("touchmove", handleLightMove);
+
+        drawLight();
+
+        // ایجاد ستاره‌های در حال چرخش
+        const starsContainer = document.getElementById("stars");
+
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement("div");
+            star.classList.add("star");
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.transform = `translateZ(${Math.random() * 500}px)`;
+            starsContainer.appendChild(star);
+        }
+
+        // کنترل موسیقی
+        const playButton = document.getElementById("playButton");
+        const pauseButton = document.getElementById("pauseButton");
+        const backgroundMusic = document.getElementById("backgroundMusic");
+        const interactionMessage = document.getElementById("interaction-message");
+
+        // نمایش پیام برای تعامل کاربر
+        interactionMessage.style.display = "block";
+
+        // پخش موسیقی پس از تعامل کاربر
+        document.addEventListener("click", () => {
+            backgroundMusic.play();
+            interactionMessage.style.display = "none";
+        });
+
+        playButton.addEventListener("click", () => {
+            backgroundMusic.play();
+        });
+
+        pauseButton.addEventListener("click", () => {
+            backgroundMusic.pause();
+        });
+
+        // تایمر ماهگرد بعدی (۱۷ روز دیگر، ساعت ۹ شب)
+        const countdownElement = document.getElementById("countdown");
+        const daysElement = document.getElementById("days");
+        const hoursElement = document.getElementById("hours");
+        const minutesElement = document.getElementById("minutes");
+        const secondsElement = document.getElementById("seconds");
+
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + 17);
+        targetDate.setHours(21, 0, 0, 0); // ساعت ۹ شب
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const timeLeft = targetDate - now;
+
+            if (timeLeft <= 0) {
+                countdownElement.innerHTML = "ماهگرد بعدی فرا رسیده است! 🎉";
+                return;
+            }
+
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            daysElement.textContent = days;
+            hoursElement.textContent = hours;
+            minutesElement.textContent = minutes;
+            secondsElement.textContent = seconds;
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // نمایش برگه راهنما به‌طور خودکار
+        const guideModal = document.getElementById("guide-modal");
+        const closeGuideButton = document.getElementById("close-guide");
+
+        setTimeout(() => {
+            guideModal.style.display = "block";
+        }, 1000);
+
+        closeGuideButton.addEventListener("click", () => {
+            guideModal.style.display = "none";
+        });
+
+        // نمایش محتوای المان‌های مخفی با کلیک
+        const hiddenElements = document.querySelectorAll(".hidden-element");
+        hiddenElements.forEach(element => {
+            element.addEventListener("click", () => {
+                element.classList.toggle("active");
+            });
+        });
+    </script>
+</body>
+</html>
